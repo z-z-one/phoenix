@@ -1,0 +1,13 @@
+@charset "UTF-8";
+/* 메뉴 오른쪽에 화면 구성 할 수 있게.. */
+div.all {
+	width: 100%;
+}
+div.left {	
+	width: 20%;
+	float: left;
+}
+div.right {
+	width: 80%;
+	float: right;
+}

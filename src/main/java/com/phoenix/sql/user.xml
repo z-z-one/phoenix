@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="User">
+	<resultMap type="map" id="newPofloDTO">
+		<result property="pnum" column="pnum" />
+		<result property="ptitle" column="ptitle" />
+		<result property="pcontents" column="pcontents" jdbcType="CLOB" javaType="java.lang.String"/>
+		<result property="purl" column="purl" />
+		<result property="ppath" column="ppath" jdbcType="LONGVARCHAR" javaType="java.lang.String"/>
+		<result property="userid" column="userid" />
+	</resultMap>
+	
+	
+	<insert id="join" parameterType="userdto">
+		INSERT INTO `member` VALUES (#{userid},#{userpw},#{useremail},#{userphone})
+	</insert>
+	
+	<insert id="savePortfolio" parameterType="PortfolioDTO">
+		INSERT INTO portfolio (`ptitle`, `pcontents`, `purl`, `ppath`, `userid`) 
+	VALUES 	( 
+			   #{ptitle}, 
+			   #{pcontents}, 
+			   #{purl}, 
+			   #{ppath}, 
+			   #{userid}
+            )
+	</insert>
+	
+	<insert id="makeEmptyPofol" parameterType="string" >
+	INSERT INTO portfolio (`ptitle`, `pcontents`, `purl`, `ppath`, `userid`) 
+	VALUES 	(  '', '', '', 
+			   '', #{userid}
+            )
+	</insert>
+	
+	<select id="loadPortfol" parameterType="PortfolioDTO" resultType="PortfolioDTO">
+		SELECT * FROM portfolio WHERE userid=#{userid} AND pnum=#{pnum}
+	</select>
+	
+	<select id="loadResumes" parameterType="string"  resultType="ResumesDTO">
+		SELECT * FROM resumes WHERE userid=#{userid}
+	</select>
+	
+	<insert id="makeResumes" parameterType="userdto">
+		INSERT INTO resumes
+			VALUES (' ','male',' ',' ',' ',' ',' ',' ',' ',' ',#{userid})
+	</insert>
+	<update id="saveResumes" parameterType="com.phoenix.resumes.ResumesDTO">
+		UPDATE resumes SET username =#{username} , gender =#{gender} ,
+			userphone =#{userphone} ,useremail =#{useremail} ,hight =#{hight} ,school =#{school} ,
+			major =#{major} ,term =#{term} ,career =#{career} ,etc =#{etc} WHERE USERID = #{userid}
+	</update>
+	
+	<delete id="delCoverLetter" parameterType="coverletterdto">
+		DELETE FROM coverletter WHERE USERID = #{userid} AND CNUM =#{cnum}
+	</delete>
+	
+	<delete id="delPortfolio" parameterType="PortfolioDTO">
+		DELETE FROM portfolio WHERE USERID = #{userid}  AND PNUM =#{pnum}
+	</delete>
+	
+	<insert id="savecl" parameterType="coverletterdto">
+		INSERT INTO coverletter VALUES (#{cnum},#{ctitle},#{ccontents}, #{userid})
+	</insert>
+	
+	<select id="getNewCLID" parameterType="string" resultType="int">
+		SELECT CAST(SUBSTRING(cnum, LOCATE('_', cnum) + 1) AS UNSIGNED) AS cnum FROM coverletter WHERE USERID = #{userid} ORDER BY cnum DESC LIMIT 1
+	</select>
+	
+	<select id="loadCoverLetter" parameterType="coverletterdto" resultType="coverletterdto">
+		SELECT *  FROM coverletter WHERE USERID = #{userid}
+	</select>
+	
+	<select id="loadPortfolios" parameterType="string" resultType="PortfolioDTO">
+		SELECT * FROM portfolio WHERE userid = #{userid}
+	</select>
+	
+	<select id="checkCoverLetterLen" parameterType="coverletterdto" resultType="_int">
+		SELECT COUNT(*) FROM coverletter WHERE USERID = #{userid}
+	</select>
+	
+	<select id="checkCoverLetter" parameterType="coverletterdto" resultType="int">
+		SELECT COUNT(*) FROM  coverletter WHERE CNUM = #{cnum} AND USERID = #{userid}
+	</select>
+	
+	<select id="checkPortfolio" parameterType="PortfolioDTO" resultType="int">
+		SELECT COUNT(*) FROM portfolio WHERE userid=#{userid} AND pnum= #{pnum}
+	</select>
+	
+	<update id="updatePortfolio" parameterType="PortfolioDTO">
+		UPDATE portfolio SET ptitle=#{ptitle} , pcontents =#{pcontents} , purl =#{purl} , ppath = #{ppath} WHERE pnum = #{pnum} AND userid = #{userid}
+	</update>
+	
+	<update id="updateCoverLetter" parameterType="coverletterdto">
+		UPDATE coverletter SET CTITLE =#{ctitle} , CCONTENTS =#{ccontents} WHERE CNUM =#{cnum} AND USERID = #{userid}
+	</update>
+	
+	<select id="checkId" parameterType="string" resultType="_int">
+		SELECT count(*) FROM `member` WHERE userid = #{userid}
+	</select>
+	
+	<select id="login" parameterType= "hashmap" resultType="com.phoenix.user.dao.UserDTO">
+		SELECT * FROM `member` WHERE userid = #{userid} AND userpw=#{userpw} 
+	</select>
+	
+	<update id="editMyPage" parameterType= "hashmap">
+		UPDATE `member` SET USEREMAIL = #{useremail}, USERPHONE = #{userphone} WHERE userid = #{userid}
+	</update>
+	
+	<select id="getinform" parameterType= "string" resultType="userdto">
+		SELECT * FROM `member` WHERE USERID = #{userid}
+	</select>
+	
+	<update id="editPassword" parameterType= "hashmap">
+		UPDATE `member` SET USERPW = #{userpw} WHERE userid = #{userid}
+	</update>
+	
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+ 
